@@ -1,846 +1,296 @@
-import { useState, useEffect, useRef } from 'react'
-import { Button } from '@/components/ui/button.jsx'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card.jsx'
-import { Badge } from '@/components/ui/badge.jsx'
-import { Input } from '@/components/ui/input.jsx'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select.jsx'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs.jsx'
-import { Search, Star, ShoppingCart, Zap, Brain, Sparkles, Filter, ArrowRight, Check, Users, TrendingUp, Clock, X, User, Briefcase, Heart, Target, BookOpen, DollarSign } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
-import EnhancedCheckout from './components/EnhancedCheckout.jsx'
-import StripePayment from './components/StripePayment.jsx'
-import BundleSection from './components/BundleSection.jsx'
-import PromptComparison from './components/PromptComparison.jsx'
-import InteractivePromptDemo from './components/InteractivePromptDemo.jsx'
-import { getAllPrompts, getFeaturedPrompts, getPromptsByType, categories, platforms } from './data/prompts.js'
+import React from 'react'
+import { ShoppingCart, Check, Users, TrendingUp, Clock, Star, Zap, Target, Brain, Lightbulb } from 'lucide-react'
 import './App.css'
 
-// Hook personalizado para animações de scroll
-const useScrollAnimation = () => {
-  const [inView, setInView] = useState(false)
-  const elementRef = useRef(null)
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true)
-        }
-      },
-      { threshold: 0.1, rootMargin: '50px' }
-    )
-
-    if (elementRef.current) {
-      observer.observe(elementRef.current)
-    }
-
-    return () => observer.disconnect()
-  }, [])
-
-  return [elementRef, inView]
-}
-
-// Componente para seções animadas
-const AnimatedSection = ({ children, className = "", delay = 0 }) => {
-  const [ref, inView] = useScrollAnimation()
+// Componente Button simples
+const Button = ({ children, variant = "default", className = "", onClick, ...props }) => {
+  const baseClasses = "px-4 py-2 rounded-lg font-medium transition-colors"
+  const variants = {
+    default: "bg-blue-600 text-white hover:bg-blue-700",
+    outline: "border border-gray-300 text-gray-700 hover:bg-gray-50"
+  }
   
   return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 50 }}
-      animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-      transition={{ 
-        duration: 0.8, 
-        delay: delay,
-        ease: [0.25, 0.46, 0.45, 0.94]
-      }}
-      className={className}
+    <button 
+      className={`${baseClasses} ${variants[variant]} ${className}`}
+      onClick={onClick}
+      {...props}
     >
       {children}
-    </motion.div>
+    </button>
   )
 }
 
-// Componente para texto animado aprimorado
-const AnimatedText = () => {
-  const phrases = [
-    {
-      text: "De horas de trabalho para segundos de resultado",
-      highlight: "segundos de resultado",
-      icon: "⚡"
-    },
-    {
-      text: "Transforme qualquer desafio em oportunidade de crescimento",
-      highlight: "oportunidade de crescimento", 
-      icon: "🚀"
-    },
-    {
-      text: "Sua inteligência + IA = Resultados extraordinários",
-      highlight: "Resultados extraordinários",
-      icon: "🧠"
-    },
-    {
-      text: "Domine a IA antes que ela domine seu mercado",
-      highlight: "domine seu mercado",
-      icon: "🎯"
-    },
-    {
-      text: "Cada prompt é uma chave para o futuro da produtividade",
-      highlight: "futuro da produtividade",
-      icon: "🔑"
-    }
-  ]
-  
-  const [currentPhrase, setCurrentPhrase] = useState(0)
-  const [isVisible, setIsVisible] = useState(true)
-  
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setIsVisible(false)
-      setTimeout(() => {
-        setCurrentPhrase((prev) => (prev + 1) % phrases.length)
-        setIsVisible(true)
-      }, 300)
-    }, 4500)
-    
-    return () => clearInterval(interval)
-  }, [])
-  
-  const currentPhraseData = phrases[currentPhrase]
-  const beforeHighlight = currentPhraseData.text.split(currentPhraseData.highlight)[0]
-  const afterHighlight = currentPhraseData.text.split(currentPhraseData.highlight)[1]
-  
+// Componente Badge simples
+const Badge = ({ children, className = "" }) => {
   return (
-    <div className="h-16 md:h-20 flex items-center justify-center relative overflow-hidden">
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentPhrase}
-          initial={{ opacity: 0, y: 30, scale: 0.9 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: -30, scale: 0.9 }}
-          transition={{ 
-            duration: 0.6,
-            ease: [0.25, 0.46, 0.45, 0.94]
-          }}
-          className="text-center flex flex-col md:flex-row items-center justify-center gap-2 md:gap-3 px-4"
-        >
-          <motion.span
-            initial={{ rotate: 0, scale: 1 }}
-            animate={{ rotate: [0, 10, -10, 0], scale: [1, 1.1, 1] }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-2xl md:text-3xl"
-          >
-            {currentPhraseData.icon}
-          </motion.span>
-          <p className="text-lg md:text-xl font-semibold text-center max-w-4xl leading-tight">
-            <span className="text-gray-700">{beforeHighlight}</span>
-            <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent font-bold">
-              {currentPhraseData.highlight}
-            </span>
-            <span className="text-gray-700">{afterHighlight}</span>
-          </p>
-        </motion.div>
-      </AnimatePresence>
-      
-      {/* Indicadores de progresso */}
-      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 flex space-x-2">
-        {phrases.map((_, index) => (
-          <motion.div
-            key={index}
-            className={`h-1 rounded-full transition-all duration-300 ${
-              index === currentPhrase 
-                ? 'w-8 bg-gradient-to-r from-blue-500 to-purple-500' 
-                : 'w-2 bg-gray-300'
-            }`}
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: index * 0.1 }}
-          />
-        ))}
-      </div>
+    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 ${className}`}>
+      {children}
+    </span>
+  )
+}
+
+// Componente Card simples
+const Card = ({ children, className = "" }) => {
+  return (
+    <div className={`bg-white rounded-lg shadow-md p-6 ${className}`}>
+      {children}
     </div>
   )
 }
 
 function App() {
-  const [allPrompts] = useState(getAllPrompts())
-  const [filteredPrompts, setFilteredPrompts] = useState(allPrompts)
-  const [activeTab, setActiveTab] = useState("featured")
-  const [searchTerm, setSearchTerm] = useState("")
-  const [selectedCategory, setSelectedCategory] = useState("Todos")
-  const [selectedPlatform, setSelectedPlatform] = useState("Todos")
-  const [cart, setCart] = useState([])
-  const [showCart, setShowCart] = useState(false)
-  const [checkoutStep, setCheckoutStep] = useState('none') // none, enhanced, payment
-  const [customer, setCustomer] = useState(null)
+  const [cart, setCart] = React.useState([])
+  const [showCart, setShowCart] = React.useState(false)
 
-  // Filtrar prompts baseado na aba ativa
-  useEffect(() => {
-    let basePrompts = allPrompts
-    
-    if (activeTab === "featured") {
-      basePrompts = getFeaturedPrompts()
-    } else if (activeTab === "personal") {
-      basePrompts = getPromptsByType("personal")
-    } else if (activeTab === "professional") {
-      basePrompts = getPromptsByType("professional")
+  // Dados dos prompts
+  const prompts = [
+    {
+      id: 1,
+      title: "Pack Marketing Digital Completo",
+      description: "50 prompts para criar campanhas de marketing irresistíveis",
+      price: 9.99,
+      category: "Marketing",
+      rating: 4.9,
+      sales: 1247
+    },
+    {
+      id: 2,
+      title: "SEO e Blog Content",
+      description: "Prompts para criar conteúdo otimizado para SEO",
+      price: 9.99,
+      category: "Marketing",
+      rating: 4.8,
+      sales: 892
+    },
+    {
+      id: 3,
+      title: "Scripts de Vendas Profissionais",
+      description: "Prompts para criar scripts de vendas que convertem",
+      price: 9.99,
+      category: "Vendas",
+      rating: 4.9,
+      sales: 1156
     }
+  ]
 
-    let filtered = basePrompts
-
-    if (searchTerm) {
-      filtered = filtered.filter(prompt => 
-        prompt.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        prompt.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        prompt.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
-      )
-    }
-
-    if (selectedCategory !== "Todos") {
-      filtered = filtered.filter(prompt => prompt.category === selectedCategory)
-    }
-
-    if (selectedPlatform !== "Todos") {
-      filtered = filtered.filter(prompt => prompt.platform === selectedPlatform)
-    }
-
-    setFilteredPrompts(filtered)
-  }, [activeTab, searchTerm, selectedCategory, selectedPlatform, allPrompts])
-
-  // Reset filtros quando muda de aba
-  useEffect(() => {
-    setSelectedCategory("Todos")
-    setSearchTerm("")
-  }, [activeTab])
-
-  const addToCart = (promptId) => {
-    if (!cart.includes(promptId)) {
-      setCart(prev => [...prev, promptId])
-    }
-  }
-
-  const addBundle = (bundleId) => {
-    let bundleItems = []
-    
-    switch(bundleId) {
-      case 'combo-3':
-        bundleItems = [1, 2, 3]
-        break
-      case 'bundle-personal':
-        bundleItems = [1, 2, 7, 8, 9, 10]
-        break
-      case 'bundle-professional':
-        bundleItems = [3, 4, 5, 6, 11, 12, 13, 14]
-        break
-      case 'bundle-complete':
-        bundleItems = allPrompts.map(p => p.id)
-        break
-    }
-    
-    setCart(bundleItems)
-    setShowCart(true)
+  const addToCart = (prompt) => {
+    setCart([...cart, prompt])
   }
 
   const removeFromCart = (promptId) => {
-    setCart(prev => prev.filter(id => id !== promptId))
+    setCart(cart.filter(item => item.id !== promptId))
   }
 
-  const cartPrompts = allPrompts.filter(prompt => cart.includes(prompt.id))
-  const cartTotal = cartPrompts.reduce((sum, prompt) => sum + prompt.price, 0)
-  
-  // Cálculo de descontos
-  const getDiscountInfo = (cart, prompts) => {
-    const itemCount = cart.length
-    const cartItems = prompts.filter(prompt => cart.includes(prompt.id))
-    const personalItems = cartItems.filter(item => item.type === 'personal')
-    const professionalItems = cartItems.filter(item => item.type === 'professional')
+  const getTotalPrice = () => {
+    const subtotal = cart.reduce((total, item) => total + item.price, 0)
+    let discount = 0
     
-    if (itemCount >= 14) {
-      return { percentage: 0.6, type: 'Bundle Completo', description: '60% OFF - Todos os Packs!', color: 'bg-gradient-to-r from-purple-500 to-pink-500' }
+    if (cart.length >= 3) discount = 0.3
+    if (cart.length >= 6) discount = 0.5
+    if (cart.length >= 8) discount = 0.55
+    if (cart.length >= 14) discount = 0.6
+    
+    return {
+      subtotal: subtotal.toFixed(2),
+      discount: (subtotal * discount).toFixed(2),
+      total: (subtotal * (1 - discount)).toFixed(2),
+      discountPercent: Math.round(discount * 100)
     }
-    
-    if (professionalItems.length >= 8) {
-      return { percentage: 0.55, type: 'Bundle Profissional', description: '55% OFF - Profissional Completo!', color: 'bg-gradient-to-r from-blue-500 to-indigo-500' }
-    }
-    
-    if (personalItems.length >= 6) {
-      return { percentage: 0.5, type: 'Bundle Pessoal', description: '50% OFF - Pessoal Completo!', color: 'bg-gradient-to-r from-pink-500 to-red-500' }
-    }
-    
-    if (itemCount >= 3) {
-      return { percentage: 0.3, type: 'Combo 3 Packs', description: '30% OFF - Combo Especial!', color: 'bg-gradient-to-r from-green-500 to-emerald-500' }
-    }
-    
-    return { percentage: 0, type: '', description: '', color: '' }
-  }
-  
-  const discountInfo = getDiscountInfo(cart, allPrompts)
-  const discount = cartTotal * discountInfo.percentage
-  const finalTotal = cartTotal - discount
-
-  // Handlers para checkout
-  const handleCheckoutStart = () => {
-    setShowCart(false)
-    setCheckoutStep('enhanced')
-  }
-
-  const handleCheckoutComplete = (customerData) => {
-    setCustomer(customerData)
-    setCheckoutStep('payment')
-  }
-
-  const handlePaymentSuccess = (paymentIntent) => {
-    console.log('Pagamento realizado com sucesso:', paymentIntent)
-    setCart([])
-    setCheckoutStep('none')
-    setCustomer(null)
-    alert('Pagamento realizado com sucesso! Verifique seu e-mail para receber os prompts.')
-  }
-
-  const handlePaymentError = (error) => {
-    console.error('Erro no pagamento:', error)
-    alert(`Erro no pagamento: ${error.message}`)
-  }
-
-  const handleBackToStore = () => {
-    setCheckoutStep('none')
-    setCustomer(null)
-  }
-
-  const handleBackToCheckout = () => {
-    setCheckoutStep('enhanced')
-  }
-
-  // Renderizar checkout
-  if (checkoutStep === 'enhanced') {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-        <EnhancedCheckout
-          cartItems={cart}
-          prompts={allPrompts}
-          onBack={handleBackToStore}
-          onComplete={handleCheckoutComplete}
-        />
-      </div>
-    )
-  }
-
-  if (checkoutStep === 'payment' && customer) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-        <StripePayment
-          customer={customer}
-          cartItems={cartPrompts}
-          total={finalTotal}
-          onSuccess={handlePaymentSuccess}
-          onError={handlePaymentError}
-          onBack={handleBackToCheckout}
-        />
-      </div>
-    )
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       {/* Header */}
-      <motion.header 
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="bg-white/90 backdrop-blur-md border-b sticky top-0 z-50 shadow-sm"
-      >
+      <header className="bg-white/90 backdrop-blur-md border-b sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <motion.div 
-              className="flex items-center space-x-3"
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.2 }}
-            >
+            <div className="flex items-center space-x-3">
               <div className="flex items-center">
-                <motion.img 
-                  src="/simbioia_logo_clean_v2.png" 
-                  alt="SimbioIA Logo" 
-                  className="h-10 md:h-12 w-auto"
-                  whileHover={{ rotate: [0, -5, 5, 0] }}
-                  transition={{ duration: 0.5 }}
-                />
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                  <Brain className="h-6 w-6 text-white" />
+                </div>
               </div>
-              <div className="hidden sm:block">
-                <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <div>
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   SimbioIA
                 </h1>
-                <p className="text-xs md:text-sm text-gray-500">Sua simbiose com a IA</p>
+                <p className="text-sm text-gray-500">Sua simbiose com a IA</p>
               </div>
-            </motion.div>
+            </div>
             
-            <div className="flex items-center space-x-2 md:space-x-4">
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+            <div className="flex items-center space-x-4">
+              <Button 
+                variant="outline" 
+                className="relative"
+                onClick={() => setShowCart(!showCart)}
               >
-                <Button 
-                  variant="outline" 
-                  className="relative hover:bg-blue-50 hover:border-blue-300 transition-all duration-200"
-                  onClick={() => setShowCart(!showCart)}
-                >
-                  <motion.div
-                    animate={cart.length > 0 ? { scale: [1, 1.2, 1] } : {}}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <ShoppingCart className="h-4 w-4 mr-1 md:mr-2" />
-                  </motion.div>
-                  <span className="hidden sm:inline">Carrinho</span>
-                  <span className="sm:hidden">🛒</span>
-                  {cart.length > 0 && (
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      className="absolute -top-2 -right-2"
-                    >
-                      <Badge className="h-5 w-5 rounded-full p-0 flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-500 animate-pulse">
-                        {cart.length}
-                      </Badge>
-                    </motion.div>
-                  )}
-                </Button>
-              </motion.div>
+                <ShoppingCart className="h-4 w-4 mr-2" />
+                Carrinho
+                {cart.length > 0 && (
+                  <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center">
+                    {cart.length}
+                  </Badge>
+                )}
+              </Button>
             </div>
           </div>
         </div>
-      </motion.header>
-
-      {/* Cart Sidebar */}
-      <AnimatePresence>
-        {showCart && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/50 z-50"
-              onClick={() => setShowCart(false)}
-            />
-            <motion.div
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              className="fixed right-0 top-0 h-full w-96 bg-white shadow-xl z-50 overflow-y-auto"
-            >
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-semibold">Carrinho ({cart.length})</h3>
-                  <Button variant="ghost" size="sm" onClick={() => setShowCart(false)}>
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-
-                {cart.length === 0 ? (
-                  <div className="text-center py-8">
-                    <ShoppingCart className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                    <p className="text-gray-500">Seu carrinho está vazio</p>
-                  </div>
-                ) : (
-                  <>
-                    <div className="space-y-4 mb-6">
-                      {cartPrompts.map(prompt => (
-                        <div key={prompt.id} className="flex items-start space-x-3 p-3 border rounded-lg">
-                          <div className="text-2xl">{prompt.icon}</div>
-                          <div className="flex-1">
-                            <h4 className="font-medium text-sm">{prompt.title}</h4>
-                            <Badge variant="outline" className="text-xs mt-1">
-                              {prompt.platform}
-                            </Badge>
-                            <p className="text-sm font-semibold text-green-600 mt-1">
-                              R$ {prompt.price.toFixed(2)}
-                            </p>
-                          </div>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => removeFromCart(prompt.id)}
-                          >
-                            <X className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="border-t pt-4">
-                      <div className="flex justify-between items-center mb-2">
-                        <span>Subtotal:</span>
-                        <span>R$ {cartTotal.toFixed(2)}</span>
-                      </div>
-                      
-                      {discount > 0 && (
-                        <div className="flex justify-between items-center mb-2 text-green-600">
-                          <span>{discountInfo.type}:</span>
-                          <span>-R$ {discount.toFixed(2)}</span>
-                        </div>
-                      )}
-                      
-                      <div className="flex justify-between items-center mb-4 text-lg font-bold">
-                        <span>Total:</span>
-                        <span className="text-green-600">R$ {finalTotal.toFixed(2)}</span>
-                      </div>
-                      
-                      {discount > 0 && (
-                        <div className={`p-3 rounded-lg mb-4 text-white ${discountInfo.color}`}>
-                          <p className="text-sm font-medium">
-                            🎉 {discountInfo.description}
-                          </p>
-                          <p className="text-xs opacity-90">
-                            Economia de R$ {discount.toFixed(2)} ({(discountInfo.percentage * 100).toFixed(0)}% OFF)
-                          </p>
-                        </div>
-                      )}
-                      
-                      {cart.length === 2 && (
-                        <div className="bg-yellow-50 p-3 rounded-lg mb-4 border border-yellow-200">
-                          <p className="text-sm text-yellow-800 font-medium">
-                            💡 Adicione mais 1 item e ganhe 30% de desconto!
-                          </p>
-                        </div>
-                      )}
-                      
-                      {cart.length >= 3 && cart.length < 6 && (
-                        <div className="bg-blue-50 p-3 rounded-lg mb-4 border border-blue-200">
-                          <p className="text-sm text-blue-800 font-medium">
-                            🚀 Complete o Bundle Pessoal (6 itens) e ganhe 50% OFF!
-                          </p>
-                        </div>
-                      )}
-
-                      <Button 
-                        className="w-full"
-                        onClick={handleCheckoutStart}
-                      >
-                        Finalizar Compra
-                      </Button>
-                    </div>
-                  </>
-                )}
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+      </header>
 
       {/* Hero Section */}
-      <AnimatedSection className="py-12 md:py-20 px-4">
+      <section className="py-20 px-4">
         <div className="container mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent leading-tight">
-              Sua mente, amplificada
-            </h2>
-            <p className="text-lg md:text-xl lg:text-2xl text-gray-600 mb-3 md:mb-4 max-w-4xl mx-auto">
-              Sua parceria inteligente com a IA
-            </p>
-            <p className="text-base md:text-lg text-gray-500 mb-6 md:mb-8 max-w-3xl mx-auto leading-relaxed px-4">
-              Já imaginou ter um especialista em qualquer assunto, disponível 24/7, para transformar seus desafios em resultados brilhantes? 
-              Com a SimbioIA, você não substitui sua inteligência - você a amplifica através de uma parceria perfeita.
-            </p>
-            <div className="bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 rounded-2xl md:rounded-3xl p-4 md:p-8 mb-8 md:mb-12 max-w-5xl mx-auto border border-blue-200 shadow-lg backdrop-blur-sm">
-              <AnimatedText />
+          <h2 className="text-6xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+            Sua mente, amplificada
+          </h2>
+          <p className="text-2xl text-gray-600 mb-4 max-w-4xl mx-auto">
+            Sua parceria inteligente com a IA
+          </p>
+          <p className="text-lg text-gray-500 mb-8 max-w-3xl mx-auto">
+            Já imaginou ter um especialista em qualquer assunto, disponível 24/7, para transformar seus desafios em resultados brilhantes? 
+            Com a SimbioIA, você não substitui sua inteligência - você a amplifica através de uma parceria perfeita.
+          </p>
+          
+          <div className="flex flex-wrap justify-center gap-4 mb-12">
+            <div className="flex items-center bg-white rounded-full px-6 py-3 shadow-md">
+              <Check className="h-5 w-5 text-green-500 mr-2" />
+              <span className="font-medium">Soluções Testadas</span>
             </div>
-            <div className="flex flex-wrap justify-center gap-3 md:gap-4 mb-8 md:mb-12 px-4">
-              <motion.div 
-                className="flex items-center bg-white rounded-full px-4 md:px-6 py-2 md:py-3 shadow-md hover:shadow-lg transition-shadow"
-                whileHover={{ scale: 1.05, y: -2 }}
-                transition={{ duration: 0.2 }}
-              >
-                <Check className="h-4 w-4 md:h-5 md:w-5 text-green-500 mr-2" />
-                <span className="font-medium text-sm md:text-base">Soluções Testadas</span>
-              </motion.div>
-              <motion.div 
-                className="flex items-center bg-white rounded-full px-4 md:px-6 py-2 md:py-3 shadow-md hover:shadow-lg transition-shadow"
-                whileHover={{ scale: 1.05, y: -2 }}
-                transition={{ duration: 0.2 }}
-              >
-                <Users className="h-4 w-4 md:h-5 md:w-5 text-blue-500 mr-2" />
-                <span className="font-medium text-sm md:text-base">+15.000 Usuários</span>
-              </motion.div>
-              <motion.div 
-                className="flex items-center bg-white rounded-full px-4 md:px-6 py-2 md:py-3 shadow-md hover:shadow-lg transition-shadow"
-                whileHover={{ scale: 1.05, y: -2 }}
-                transition={{ duration: 0.2 }}
-              >
-                <TrendingUp className="h-4 w-4 md:h-5 md:w-5 text-purple-500 mr-2" />
-                <span className="font-medium text-sm md:text-base">Resultados Comprovados</span>
-              </motion.div>
-              <motion.div 
-                className="flex items-center bg-white rounded-full px-4 md:px-6 py-2 md:py-3 shadow-md hover:shadow-lg transition-shadow"
-                whileHover={{ scale: 1.05, y: -2 }}
-                transition={{ duration: 0.2 }}
-              >
-                <Clock className="h-4 w-4 md:h-5 md:w-5 text-orange-500 mr-2" />
-                <span className="font-medium text-sm md:text-base">Acesso Imediato</span>
-              </motion.div>
+            <div className="flex items-center bg-white rounded-full px-6 py-3 shadow-md">
+              <Users className="h-5 w-5 text-blue-500 mr-2" />
+              <span className="font-medium">+15.000 Usuários</span>
             </div>
-          </motion.div>
-        </div>
-      </AnimatedSection>
-
-      {/* Nossa História Section */}
-      <AnimatedSection className="py-16 px-4 bg-gradient-to-r from-gray-50 to-blue-50">
-        <div className="container mx-auto max-w-4xl">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-4xl font-bold mb-8 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              A História da SimbioIA: Uma Nova Consciência
-            </h2>
-            
-            <div className="text-center mb-8">
-              <p className="text-xl font-medium text-gray-700">
-                <strong>Tudo começou com uma observação simples:</strong>
-              </p>
-              <p className="text-lg text-gray-600 mt-4 leading-relaxed">
-                Enquanto muitos veem a IA como uma ameaça ou substituição, nós enxergamos uma oportunidade única de <strong>simbiose</strong> - 
-                uma relação mutuamente benéfica onde a inteligência humana e artificial se complementam perfeitamente.
-              </p>
+            <div className="flex items-center bg-white rounded-full px-6 py-3 shadow-md">
+              <TrendingUp className="h-5 w-5 text-purple-500 mr-2" />
+              <span className="font-medium">Resultados Comprovados</span>
             </div>
-
-            <div className="grid md:grid-cols-2 gap-8 mb-8">
-              <div className="bg-white p-6 rounded-xl shadow-md border border-blue-100">
-                <div className="text-4xl mb-4">🧠</div>
-                <h3 className="text-xl font-bold text-blue-800 mb-3">Inteligência Humana</h3>
-                <p className="text-gray-600">
-                  Criatividade, intuição, experiência emocional e capacidade de contextualizar problemas complexos.
-                </p>
-              </div>
-              
-              <div className="bg-white p-6 rounded-xl shadow-md border border-purple-100">
-                <div className="text-4xl mb-4">🤖</div>
-                <h3 className="text-xl font-bold text-purple-800 mb-3">Inteligência Artificial</h3>
-                <p className="text-gray-600">
-                  Processamento rápido, análise de dados, geração de conteúdo e execução de tarefas repetitivas.
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-8 rounded-2xl">
-              <h3 className="text-2xl font-bold mb-4">🔗 A Simbiose Perfeita</h3>
-              <p className="text-lg leading-relaxed">
-                A SimbioIA nasceu para ser a ponte entre essas duas inteligências. Nossos prompts não são apenas comandos - 
-                são <strong>catalisadores de uma parceria</strong> que potencializa o melhor de cada mundo, 
-                criando resultados que nenhuma das inteligências conseguiria alcançar sozinha.
-              </p>
-            </div>
-          </motion.div>
-        </div>
-      </AnimatedSection>
-
-      {/* Demonstração Interativa */}
-      <AnimatedSection className="py-16 px-4 bg-gray-50" delay={0.1}>
-        <div className="container mx-auto">
-          <InteractivePromptDemo />
-        </div>
-      </AnimatedSection>
-
-      {/* Comparação de Prompts */}
-      <AnimatedSection className="py-16 px-4" delay={0.2}>
-        <div className="container mx-auto">
-          <PromptComparison />
-        </div>
-      </AnimatedSection>
-
-      {/* Bundles Section */}
-      <AnimatedSection className="py-16 px-4 bg-gradient-to-r from-purple-50 to-pink-50" delay={0.3}>
-        <div className="container mx-auto">
-          <BundleSection onAddBundle={addBundle} />
-        </div>
-      </AnimatedSection>
-
-      {/* Filtros e Busca */}
-      <section className="py-8 px-4 bg-white/50">
-        <div className="container mx-auto">
-          <div className="flex flex-col md:flex-row gap-4 items-center justify-between mb-8">
-            <div className="flex-1 max-w-md">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input
-                  placeholder="Buscar prompts..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-            </div>
-            <div className="flex gap-4">
-              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger className="w-48">
-                  <SelectValue placeholder="Categoria" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Todos">Todas as categorias</SelectItem>
-                  {categories.map(category => (
-                    <SelectItem key={category} value={category}>{category}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Select value={selectedPlatform} onValueChange={setSelectedPlatform}>
-                <SelectTrigger className="w-48">
-                  <SelectValue placeholder="Plataforma" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Todos">Todas as plataformas</SelectItem>
-                  {platforms.map(platform => (
-                    <SelectItem key={platform} value={platform}>{platform}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <div className="flex items-center bg-white rounded-full px-6 py-3 shadow-md">
+              <Clock className="h-5 w-5 text-orange-500 mr-2" />
+              <span className="font-medium">Acesso Imediato</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Tabs de Prompts */}
+      {/* Prompts Section */}
       <section className="py-16 px-4">
         <div className="container mx-auto">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-3 mb-8">
-              <TabsTrigger value="featured" className="flex items-center gap-2">
-                <Star className="h-4 w-4" />
-                Em Destaque
-              </TabsTrigger>
-              <TabsTrigger value="personal" className="flex items-center gap-2">
-                <Heart className="h-4 w-4" />
-                Uso Pessoal
-              </TabsTrigger>
-              <TabsTrigger value="professional" className="flex items-center gap-2">
-                <Briefcase className="h-4 w-4" />
-                Uso Profissional
-              </TabsTrigger>
-            </TabsList>
-
-            <TabsContent value={activeTab}>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {filteredPrompts.map((prompt, index) => (
-                  <motion.div
-                    key={prompt.id}
-                    initial={{ opacity: 0, y: 30, scale: 0.9 }}
-                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                    whileHover={{ 
-                      y: -5, 
-                      scale: 1.02,
-                      transition: { duration: 0.2 }
-                    }}
-                    transition={{ 
-                      duration: 0.5, 
-                      delay: index * 0.1,
-                      ease: [0.25, 0.46, 0.45, 0.94]
-                    }}
-                    viewport={{ once: true, margin: "-50px" }}
-                  >
-                    <Card className="h-full hover:shadow-lg transition-shadow duration-300 group">
-                      <CardHeader className="pb-3">
-                        <div className="flex items-start justify-between">
-                          <div className="text-3xl mb-2">{prompt.icon}</div>
-                          <Badge variant={prompt.featured ? "default" : "secondary"}>
-                            {prompt.platform}
-                          </Badge>
-                        </div>
-                        <CardTitle className="text-lg leading-tight group-hover:text-blue-600 transition-colors">
-                          {prompt.title}
-                        </CardTitle>
-                        <CardDescription className="text-sm">
-                          {prompt.description}
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent className="pb-3">
-                        <div className="flex flex-wrap gap-1 mb-3">
-                          {prompt.tags.slice(0, 3).map(tag => (
-                            <Badge key={tag} variant="outline" className="text-xs">
-                              {tag}
-                            </Badge>
-                          ))}
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-2xl font-bold text-green-600">
-                            R$ {prompt.price.toFixed(2)}
-                          </span>
-                          <div className="flex items-center text-yellow-500">
-                            <Star className="h-4 w-4 fill-current" />
-                            <span className="ml-1 text-sm font-medium">{prompt.rating}</span>
-                          </div>
-                        </div>
-                      </CardContent>
-                      <CardFooter>
-                        <Button 
-                          className="w-full group-hover:bg-blue-600 transition-colors"
-                          onClick={() => addToCart(prompt.id)}
-                          disabled={cart.includes(prompt.id)}
-                        >
-                          {cart.includes(prompt.id) ? (
-                            <>
-                              <Check className="h-4 w-4 mr-2" />
-                              Adicionado
-                            </>
-                          ) : (
-                            <>
-                              <ShoppingCart className="h-4 w-4 mr-2" />
-                              Adicionar ao Carrinho
-                            </>
-                          )}
-                        </Button>
-                      </CardFooter>
-                    </Card>
-                  </motion.div>
-                ))}
-              </div>
-            </TabsContent>
-          </Tabs>
+          <h3 className="text-4xl font-bold text-center mb-12 text-gray-800">
+            Prompts Profissionais
+          </h3>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {prompts.map((prompt) => (
+              <Card key={prompt.id} className="hover:shadow-lg transition-shadow">
+                <div className="flex justify-between items-start mb-4">
+                  <Badge>{prompt.category}</Badge>
+                  <div className="flex items-center">
+                    <Star className="h-4 w-4 text-yellow-400 fill-current" />
+                    <span className="text-sm text-gray-600 ml-1">{prompt.rating}</span>
+                  </div>
+                </div>
+                
+                <h4 className="text-xl font-bold mb-2 text-gray-800">{prompt.title}</h4>
+                <p className="text-gray-600 mb-4">{prompt.description}</p>
+                
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-2xl font-bold text-blue-600">R$ {prompt.price}</span>
+                  <span className="text-sm text-gray-500">{prompt.sales} vendas</span>
+                </div>
+                
+                <Button 
+                  className="w-full"
+                  onClick={() => addToCart(prompt)}
+                >
+                  <ShoppingCart className="h-4 w-4 mr-2" />
+                  Adicionar ao Carrinho
+                </Button>
+              </Card>
+            ))}
+          </div>
         </div>
       </section>
 
+      {/* Cart Sidebar */}
+      {showCart && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50">
+          <div className="fixed right-0 top-0 h-full w-96 bg-white shadow-xl p-6 overflow-y-auto">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-bold">Carrinho</h3>
+              <Button variant="outline" onClick={() => setShowCart(false)}>
+                ✕
+              </Button>
+            </div>
+            
+            {cart.length === 0 ? (
+              <p className="text-gray-500">Seu carrinho está vazio</p>
+            ) : (
+              <>
+                <div className="space-y-4 mb-6">
+                  {cart.map((item, index) => (
+                    <div key={index} className="flex justify-between items-center p-3 bg-gray-50 rounded">
+                      <div>
+                        <h4 className="font-medium">{item.title}</h4>
+                        <p className="text-blue-600 font-bold">R$ {item.price}</p>
+                      </div>
+                      <Button 
+                        variant="outline" 
+                        onClick={() => removeFromCart(item.id)}
+                        className="text-red-600"
+                      >
+                        Remover
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+                
+                <div className="border-t pt-4">
+                  {(() => {
+                    const pricing = getTotalPrice()
+                    return (
+                      <>
+                        <div className="flex justify-between mb-2">
+                          <span>Subtotal:</span>
+                          <span>R$ {pricing.subtotal}</span>
+                        </div>
+                        {pricing.discountPercent > 0 && (
+                          <div className="flex justify-between mb-2 text-green-600">
+                            <span>Desconto ({pricing.discountPercent}%):</span>
+                            <span>-R$ {pricing.discount}</span>
+                          </div>
+                        )}
+                        <div className="flex justify-between font-bold text-lg border-t pt-2">
+                          <span>Total:</span>
+                          <span>R$ {pricing.total}</span>
+                        </div>
+                      </>
+                    )
+                  })()}
+                  
+                  <Button className="w-full mt-4">
+                    Finalizar Compra
+                  </Button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12 px-4">
-        <div className="container mx-auto">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <Brain className="h-8 w-8 text-blue-400" />
-                <span className="text-xl font-bold">SimbioIA</span>
-              </div>
-              <p className="text-gray-400">
-                Sua simbiose com a Inteligência Artificial
-              </p>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">Produtos</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li>Prompts Pessoais</li>
-                <li>Prompts Profissionais</li>
-                <li>Bundles Especiais</li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">Suporte</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li>Como usar</li>
-                <li>FAQ</li>
-                <li>Contato</li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold mb-4">Legal</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li>Termos de Uso</li>
-                <li>Política de Privacidade</li>
-                <li>Política de Reembolso</li>
-              </ul>
-            </div>
+      <footer className="bg-gray-800 text-white py-12">
+        <div className="container mx-auto px-4 text-center">
+          <div className="flex items-center justify-center mb-4">
+            <Brain className="h-8 w-8 text-blue-400 mr-3" />
+            <h3 className="text-2xl font-bold">SimbioIA</h3>
           </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 SimbioIA. Todos os direitos reservados.</p>
-          </div>
+          <p className="text-gray-400 mb-4">
+            Transformando a forma como você interage com a Inteligência Artificial
+          </p>
+          <p className="text-sm text-gray-500">
+            © 2025 SimbioIA. Todos os direitos reservados.
+          </p>
         </div>
       </footer>
     </div>
