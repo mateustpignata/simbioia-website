@@ -1,26 +1,10 @@
 {
-  "version": 2,
-  "name": "simbioia",
-  "builds": [
+  "rewrites": [
     {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
-  ],
-  "env": {
-    "REACT_APP_API_URL": "https://y0h0i3c8gyog.manus.space",
-    "REACT_APP_ENVIRONMENT": "production",
-    "REACT_APP_SITE_URL": "https://simbioia.com.br"
-  },
   "headers": [
     {
       "source": "/(.*)",
@@ -36,6 +20,10 @@
         {
           "key": "X-XSS-Protection",
           "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "origin-when-cross-origin"
         }
       ]
     }
