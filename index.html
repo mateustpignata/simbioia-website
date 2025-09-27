@@ -1,181 +1,135 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="SimbioIA - Prompts profissionais de IA que realmente funcionam. Economize tempo e amplifique sua produtividade com pacotes otimizados para marketing, vendas, conteúdo e muito mais.">
-    <title>SimbioIA - Prompts Profissionais de IA</title>
-    <link rel="stylesheet" href="style.css"> <!-- Sugestão: mover CSS para arquivo externo -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SimbioIA - Prompts profissionais de IA que realmente funcionam. Economize tempo e amplifique sua produtividade com pacotes otimizados para marketing, vendas, conteúdo e muito mais.">
+  <title>SimbioIA - Prompts Profissionais de IA</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Urgency Bar -->
-    <div class="urgency-bar" role="alert">
-        ⏰ OFERTA LIMITADA: Termina em <span class="countdown" id="countdown">23:59:45</span> - 70% OFF!
+  <!-- Urgency Bar -->
+  <div class="urgency-bar" role="alert">
+    ⏰ OFERTA LIMITADA: Termina em <span class="countdown" id="countdown">23:59:45</span> - 70% OFF!
+  </div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <div class="header-content">
+        <a href="#" class="logo" aria-label="Página inicial SimbioIA">
+          <div class="logo-icon" aria-hidden="true">S</div>
+          <div class="logo-text">
+            <h1 class="site-title">SimbioIA</h1>
+            <p>Prompts Profissionais</p>
+          </div>
+        </a>
+        <button class="cart-btn" onclick="toggleCart()" aria-label="Abrir carrinho">
+          🛒 Carrinho
+          <span class="cart-count" id="cartCount" aria-live="polite">0</span>
+        </button>
+      </div>
     </div>
+  </header>
 
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <a href="#" class="logo" aria-label="Página inicial SimbioIA">
-                    <div class="logo-icon" aria-hidden="true">S</div>
-                    <div class="logo-text">
-                        <h1 class="site-title">SimbioIA</h1>
-                        <p>Prompts Profissionais</p>
-                    </div>
-                </a>
-                <button class="cart-btn" onclick="toggleCart()" aria-label="Abrir carrinho">
-                    🛒 Carrinho
-                    <span class="cart-count" id="cartCount" aria-live="polite">0</span>
-                </button>
-            </div>
+  <main>
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <h2>Prompts de IA que <span class="highlight">Realmente Funcionam</span></h2>
+        <p>Economize horas de trabalho com prompts testados e otimizados para resultados profissionais</p>
+        
+        <div class="badges">
+          <div class="badge" aria-label="Garantia de 30 dias"><span aria-hidden="true">🛡️</span>Garantia 30 dias</div>
+          <div class="badge" aria-label="Entrega instantânea"><span aria-hidden="true">⚡</span>Entrega instantânea</div>
+          <div class="badge" aria-label="Prompts testados"><span aria-hidden="true">✅</span>Prompts testados</div>
         </div>
-    </header>
+        
+        <button class="cta-btn" onclick="scrollToProducts()">Ver Produtos Disponíveis</button>
+      </div>
+    </section>
 
-    <main>
-        <!-- Hero Section -->
-        <section class="hero">
-            <div class="container">
-                <h2>Prompts de IA que <span class="highlight">Realmente Funcionam</span></h2>
-                <p>Economize horas de trabalho com prompts testados e otimizados para resultados profissionais</p>
-                
-                <div class="badges">
-                    <div class="badge" aria-label="Garantia de 30 dias">
-                        <span aria-hidden="true">🛡️</span>
-                        <span>Garantia 30 dias</span>
-                    </div>
-                    <div class="badge" aria-label="Entrega instantânea">
-                        <span aria-hidden="true">⚡</span>
-                        <span>Entrega instantânea</span>
-                    </div>
-                    <div class="badge" aria-label="Prompts testados e validados">
-                        <span aria-hidden="true">✅</span>
-                        <span>Prompts testados</span>
-                    </div>
-                </div>
-                
-                <button class="cta-btn" onclick="scrollToProducts()">Ver Produtos Disponíveis</button>
-            </div>
-        </section>
-
-        <!-- About Section -->
-        <section class="about-section">
-            <div class="container">
-                <div class="about-content">
-                    <div class="about-text">
-                        <h2>Quem <span class="highlight">Somos</span></h2>
-                        <p>Somos especialistas em Inteligência Artificial com anos de experiência em criar prompts que realmente funcionam. Nossa missão é democratizar o acesso a prompts profissionais que transformam a forma como você trabalha com IA.</p>
-                        
-                        <aside class="simbiose-explanation" aria-label="Explicação sobre o nome SimbioIA">
-                            <h3>🧬 Por que "SimbioIA"?</h3>
-                            <p><strong>Simbiose</strong> é uma relação de benefício mútuo entre duas espécies. Na SimbioIA, acreditamos que a verdadeira revolução acontece quando humanos e IA trabalham em <strong>perfeita harmonia</strong>.</p>
-                            <p>Não se trata de substituir a inteligência humana, mas de <strong>amplificá-la</strong> através de uma parceria estratégica com a tecnologia.</p>
-                        </aside>
-                        
-                        <p>Nossos prompts são desenvolvidos por profissionais que entendem tanto de tecnologia quanto de negócios, garantindo resultados práticos e aplicáveis no mundo real.</p>
-                    </div>
-                    
-                    <div class="about-visual">
-                        <div class="brain-ai-visual" aria-hidden="true">
-                            <span>🧠</span>
-                            <span class="plus-sign">+</span>
-                            <span>🤖</span>
-                            <span class="equals-sign">=</span>
-                        </div>
-                        <div class="result-visual">
-                            <div>🚀 Produtividade Amplificada</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Demo Section -->
-        <section class="demo-section">
-            <div class="container">
-                <div class="demo-container">
-                    <div class="demo-header">
-                        <h2>Veja a <span class="highlight">Diferença</span> na Prática</h2>
-                        <p>Compare prompts básicos com nossos prompts profissionais</p>
-                    </div>
-                    
-                    <nav class="demo-tabs" aria-label="Categorias de demonstração">
-                        <button class="demo-tab active" onclick="showDemo('marketing')">📈 Marketing</button>
-                        <button class="demo-tab" onclick="showDemo('vendas')">💰 Vendas</button>
-                        <button class="demo-tab" onclick="showDemo('conteudo')">✍️ Conteúdo</button>
-                    </nav>
-                    
-                    <div class="demo-content" id="demoContent" aria-live="polite">
-                        <!-- Conteúdo via JS -->
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Products Section -->
-        <section class="products" id="products">
-            <div class="container">
-                <div class="section-title">
-                    <h2>Nossos <span class="highlight">Produtos</span></h2>
-                    <p>Escolha o pack ideal para suas necessidades</p>
-                </div>
-                
-                <div class="products-grid" id="productsGrid" aria-live="polite">
-                    <!-- Produtos via JS -->
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="logo">
-                <div class="logo-icon" aria-hidden="true">S</div>
-                <div class="logo-text">
-                    <p class="site-title">SimbioIA</p>
-                </div>
-            </div>
-            <p style="margin: 15px 0;">A simbiose perfeita entre sua inteligência e a IA</p>
-            <p style="opacity: 0.7;">© 2025 SimbioIA. Todos os direitos reservados.</p>
+    <!-- About Section -->
+    <section class="about-section">
+      <div class="container about-content">
+        <div class="about-text">
+          <h2>Quem <span class="highlight">Somos</span></h2>
+          <p>Somos especialistas em Inteligência Artificial ...</p>
+          <aside class="simbiose-explanation" aria-label="Explicação sobre o nome SimbioIA">
+            <h3>🧬 Por que "SimbioIA"?</h3>
+            <p><strong>Simbiose</strong> é uma relação ...</p>
+          </aside>
+          <p>Nossos prompts são desenvolvidos ...</p>
         </div>
-    </footer>
+        <div class="about-visual">
+          <div class="brain-ai-visual" aria-hidden="true">
+            <span>🧠</span><span class="plus-sign">+</span><span>🤖</span><span class="equals-sign">=</span>
+          </div>
+          <div class="result-visual">🚀 Produtividade Amplificada</div>
+        </div>
+      </div>
+    </section>
 
-    <!-- Cart Sidebar -->
-    <div class="cart-overlay" id="cartOverlay" onclick="closeCart()">
-        <aside class="cart-sidebar" role="dialog" aria-modal="true" aria-labelledby="cartTitle" onclick="event.stopPropagation()">
-            <div class="cart-header">
-                <h3 id="cartTitle">Seu Carrinho</h3>
-                <button class="close-btn" onclick="closeCart()" aria-label="Fechar carrinho">×</button>
-            </div>
-            
-            <div class="cart-items" id="cartItems" aria-live="polite">
-                <div class="empty-cart">
-                    <div style="font-size: 48px; margin-bottom: 15px;" aria-hidden="true">🛒</div>
-                    <p>Seu carrinho está vazio</p>
-                    <p style="font-size: 14px; margin-top: 8px; opacity: 0.7;">Adicione alguns produtos para começar</p>
-                </div>
-            </div>
-            
-            <div class="cart-summary" id="cartSummary" style="display: none;">
-                <div id="discountInfo"></div>
-                <div class="summary-row">
-                    <span>Subtotal:</span>
-                    <span id="subtotal">R$ 0,00</span>
-                </div>
-                <div class="summary-row" id="discountRow" style="display: none;">
-                    <span>Desconto:</span>
-                    <span id="discountAmount" style="color: #2ed573;">R$ 0,00</span>
-                </div>
-                <div class="total-row">
-                    <span>Total:</span>
-                    <span id="total" style="color: #2ed573;">R$ 0,00</span>
-                </div>
-                <button class="checkout-btn">Finalizar Compra</button>
-            </div>
-        </aside>
+    <!-- Demo Section -->
+    <section class="demo-section">
+      <div class="container demo-container">
+        <div class="demo-header">
+          <h2>Veja a <span class="highlight">Diferença</span> na Prática</h2>
+          <p>Compare prompts básicos com nossos prompts profissionais</p>
+        </div>
+        <nav class="demo-tabs" aria-label="Categorias de demonstração">
+          <button class="demo-tab active" onclick="showDemo('marketing')">📈 Marketing</button>
+          <button class="demo-tab" onclick="showDemo('vendas')">💰 Vendas</button>
+          <button class="demo-tab" onclick="showDemo('conteudo')">✍️ Conteúdo</button>
+        </nav>
+        <div class="demo-content" id="demoContent" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="products" id="products">
+      <div class="container">
+        <div class="section-title">
+          <h2>Nossos <span class="highlight">Produtos</span></h2>
+          <p>Escolha o pack ideal para suas necessidades</p>
+        </div>
+        <div class="products-grid" id="productsGrid" aria-live="polite"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="logo">
+        <div class="logo-icon" aria-hidden="true">S</div>
+        <div class="logo-text"><p class="site-title">SimbioIA</p></div>
+      </div>
+      <p>A simbiose perfeita entre sua inteligência e a IA</p>
+      <p style="opacity:0.7;">© 2025 SimbioIA. Todos os direitos reservados.</p>
     </div>
+  </footer>
 
-    <script src="script.js"></script> <!-- Sugestão: mover JS para arquivo externo -->
+  <!-- Cart Sidebar -->
+  <div class="cart-overlay" id="cartOverlay" onclick="closeCart()">
+    <aside class="cart-sidebar" role="dialog" aria-modal="true" aria-labelledby="cartTitle" onclick="event.stopPropagation()">
+      <div class="cart-header">
+        <h3 id="cartTitle">Seu Carrinho</h3>
+        <button class="close-btn" onclick="closeCart()" aria-label="Fechar carrinho">×</button>
+      </div>
+      <div class="cart-items" id="cartItems" aria-live="polite"></div>
+      <div class="cart-summary" id="cartSummary" style="display:none;">
+        <div id="discountInfo"></div>
+        <div class="summary-row"><span>Subtotal:</span><span id="subtotal">R$ 0,00</span></div>
+        <div class="summary-row" id="discountRow" style="display:none;">
+          <span>Desconto:</span><span id="discountAmount">R$ 0,00</span>
+        </div>
+        <div class="total-row"><span>Total:</span><span id="total">R$ 0,00</span></div>
+        <button class="checkout-btn">Finalizar Compra</button>
+      </div>
+    </aside>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
